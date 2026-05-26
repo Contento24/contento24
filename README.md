@@ -1,22 +1,28 @@
 # contento24
 一个开源且隐私的24小时在线WebP2P聊天室
 
-> 运行方法
+> 服务器版本 运行方法
 >
-> 需要先把npm nodejs git ssh全家都搬上来
+> 需要先把npm nodejs git pm2都搬上来
 ```
 git clone git@github.com:mokanove/contento24.git
-pnpm install
-#↑或者随便什么npm
-node server.js
+cd contento24/
+git checkout server
+git pull
+npm install
+pm2 start server.js --name "contento24"
 ```
-> 当看到
+> 然后去nginx添加如下几行配置反向代理
 ```
-=================================================
-🚀 世界光明网全双工聊天室已成功发射！
-端口: 3000
-内网测试: http://localhost:3000
-外网测试: 请直接通过你的IP地址/域名:端口访问
-=================================================
+        location /contento24/ {
+            proxy_pass http://127.0.0.1:3000/;
+
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
 ```
-> 说明跑起来了
