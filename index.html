@@ -3,149 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>公网直连-P2P聊天室</title>
-    <style>
-        :root {
-            --bg-color: #121214;
-            --container-bg: #1a1a1e;
-            --border-color: #2c2c35;
-            --text-color: #e4e4e7;
-            --primary-color: #3b82f6;
-            --my-msg-bg: #1e3a8a; /* 我消息的背景色：深蓝色 */
-            --other-msg-bg: #232329; /* 别人发的消息背景色：深灰色 */
-            --meta-color: #a1a1aa;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 15px;
-        }
-        .chat-container {
-            width: 100%;
-            max-width: 800px;
-            height: 90vh;
-            background-color: var(--container-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-        .chat-header {
-            padding: 20px;
-            background-color: #1e1e24;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .chat-header h2 { font-size: 1.2rem; font-weight: 600; color: #fff; }
-        .config-area { display: flex; gap: 10px; align-items: center; }
-        .config-area input {
-            background: #27272a;
-            border: 1px solid var(--border-color);
-            color: #fff;
-            padding: 6px 12px;
-            border-radius: 6px;
-            outline: none;
-            font-size: 0.9rem;
-        }
-        .chat-messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .message-row {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            animation: fadeIn 0.2s ease-in-out;
-        }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        .message-card {
-            padding: 12px 16px;
-            border-radius: 8px;
-            max-width: 75%;
-            word-break: break-all;
-        }
-
-        .row-other { align-items: flex-start; }
-        .row-other .message-card {
-            background-color: var(--other-msg-bg);
-            border: 1px solid #2d2d34;
-        }
-        .row-other .message-user { color: #60a5fa; font-weight: bold; }
-
-        .row-me { align-items: flex-end; }
-        .row-me .message-card {
-            background-color: var(--my-msg-bg);
-            border: 1px solid #2563eb;
-        }
-        .row-me .message-user { color: #34d399; font-weight: bold; }
-
-        .message-meta {
-            font-size: 0.75rem;
-            color: var(--meta-color);
-            margin-bottom: 4px;
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .row-me .message-meta { flex-direction: row-reverse; }
-
-        .message-text {
-            font-size: 0.95rem;
-            line-height: 1.5;
-            white-space: pre-wrap;
-        }
-
-        .chat-input-area {
-            padding: 20px;
-            background-color: #1e1e24;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            gap: 12px;
-        }
-        .chat-input-area textarea {
-            flex: 1;
-            background-color: #27272a;
-            border: 1px solid var(--border-color);
-            color: #fff;
-            padding: 12px;
-            border-radius: 8px;
-            resize: none;
-            outline: none;
-            height: 44px;
-            font-family: inherit;
-        }
-        .chat-input-area textarea:focus { border-color: var(--primary-color); }
-        .chat-input-area button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 0 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background 0.2s;
-        }
-        .chat-input-area button:hover { background-color: var(--primary-hover); }
-    </style>
+    <title>Contento24</title>
+    <link rel="stylesheet" href="./resources/style.css">
 </head>
 <body>
-
 <div class="chat-container">
     <div class="chat-header">
         <h2>🌐 Contento24</h2>
@@ -155,86 +16,12 @@
             <input type="text" id="nickname" value="玩家_Anonymous" placeholder="输入你的大名">
         </div>
     </div>
-
     <div class="chat-messages" id="chatbox"></div>
-
     <div class="chat-input-area">
         <textarea id="message" placeholder="按 Enter 发送消息，Shift+Enter 换行..." rows="1"></textarea>
         <button onclick="send()">发送</button>
     </div>
 </div>
-
-<script>
-    const myClientId = 'client_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
-
-    const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-    const ws = new WebSocket(`${protocol}${window.location.host}`);
-
-    const chatbox = document.getElementById('chatbox');
-    const inputElement = document.getElementById('message');
-    const nicknameElement = document.getElementById('nickname');
-
-    inputElement.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            send();
-        }
-    });
-
-    ws.onmessage = (event) => {
-        try {
-            const data = JSON.parse(event.data);
-
-            const isMe = (data.clientId === myClientId);
-
-            const rowClass = isMe ? 'row-me' : 'row-other';
-            const displayName = isMe ? `${escapeHtml(data.nickname)} (我)` : escapeHtml(data.nickname);
-
-            const row = document.createElement('div');
-            row.className = `message-row ${rowClass}`;
-            row.innerHTML = `
-                <div class="message-meta">
-                    <span class="message-user">${displayName}</span>
-                    <span>${data.time}</span>
-                    <span style="color: #4b5563;">|</span>
-                    <span>${escapeHtml(data.ip)}</span>
-                </div>
-                <div class="message-card">
-                    <div class="message-text">${escapeHtml(data.text)}</div>
-                </div>
-            `;
-
-            chatbox.appendChild(row);
-            chatbox.scrollTo({ top: chatbox.scrollHeight, behavior: 'smooth' });
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
-    function send() {
-        const text = inputElement.value.trim();
-        const nickname = nicknameElement.value.trim() || '匿名极客';
-
-        if (text && ws.readyState === WebSocket.OPEN) {
-            const payload = JSON.stringify({
-                clientId: myClientId, 
-                nickname: nickname,
-                text: text
-            });
-            ws.send(payload);
-            inputElement.value = '';
-        }
-    }
-
-    function escapeHtml(string) {
-        return String(string).replace(/[&<>"']/g, function (s) {
-            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[s];
-        });
-    }
-
-    ws.onclose = () => {
-        alert('与服务器的连接已断开。');
-    };
-</script>
+<script src="./resources/index.js"></script>
 </body>
 </html>
