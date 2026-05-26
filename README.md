@@ -5,7 +5,7 @@
 >
 > 需要先把npm nodejs git pm2都搬上来
 ```
-git clone git@github.com:mokanove/contento24.git
+git clone https://github.com/mokanove/contento24.git
 cd contento24/
 git checkout server
 git pull
