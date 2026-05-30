@@ -15,7 +15,7 @@ const httpServer = http.createServer((req, res) => {
         '.css': 'text/css; charset=utf-8',
         '.js': 'application/javascript; charset=utf-8',
         '.png': 'image/png',
-        '.jpg': 'image/jpg'
+        '.jpg': 'image/jpeg'
     };
 
     const contentType = mimeTypes[extname] || 'application/octet-stream';
@@ -30,7 +30,18 @@ const httpServer = http.createServer((req, res) => {
     });
 });
 
-const wss = new WebSocket.Server({ server: httpServer });
+const wss = new WebSocket.Server({ 
+    server: httpServer,
+    verifyClient: (info, callback) => {
+        const req = info.req;
+        const rawIP = req.headers['x-forwarded-for'] 
+                      || req.headers['x-real-ip'] 
+                      || req.connection.remoteAddress;
+        
+        req.realClientIP = (rawIP && rawIP.includes(',')) ? rawIP.split(',')[0].trim() : rawIP;
+        callback(true);
+    }
+});
 
 function formatIP(ip) {
     if (!ip) return '未知IP';
@@ -47,13 +58,14 @@ function formatIP(ip) {
 }
 
 wss.on('connection', (ws, req) => {
-    const clientIP = formatIP(req.socket.remoteAddress);
+    const finalIP = req.realClientIP || req.socket.remoteAddress;
+    const clientIP = formatIP(finalIP);
 
     ws.on('message', (message) => {
         try {
             const parsedData = JSON.parse(message);
             const clientId = parsedData.clientId || '';
-            const nickname = parsedData.nickname || '匿名极客';
+            const nickname = parsedData.nickname || '匿名迪克';
             const text = parsedData.text || '';
 
             if (!text.trim()) return;
@@ -77,4 +89,11 @@ wss.on('connection', (ws, req) => {
     });
 });
 
-httpServer.listen(PORT, '::');
+httpServer.listen(PORT, '::', () => {
+    console.log(`=================================================`);
+    console.log(`🚀 世界光明网全双工聊天室已成功发射！`);
+    console.log(`端口: ${PORT}`);
+    console.log(`内网测试: http://localhost:${PORT}`);
+    console.log(`外网测试: 请直接通过你的IP地址/域名:端口访问`);
+    console.log(`=================================================`);
+});

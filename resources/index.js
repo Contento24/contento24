@@ -37,7 +37,7 @@ const myClientId = 'client_' + Math.random().toString(36).substring(2, 15) + Dat
             row.innerHTML = `
                 <div class="message-meta">
                     <span class="message-user">${displayName}</span>
-                    <span>${data.time}</span>
+                    <span>${escapeHtml(data.time)}</span>
                     <span>${escapeHtml(data.ip)}</span>
                 </div>
                 <div class="message-card">
@@ -72,7 +72,10 @@ const myClientId = 'client_' + Math.random().toString(36).substring(2, 15) + Dat
             return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[s];
         });
     }
-
-    ws.onclose = () => {
-        console.log('Disconnected');
+    ws.onerror = (err) => { 
+        console.error('WebSocket error', err); 
     };
+    ws.onclose = () => {
+    console.log('Disconnected，3秒后重连...');
+    setTimeout(initWebSocket, 3000);
+};
