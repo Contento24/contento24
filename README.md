@@ -8,7 +8,7 @@
 > 安装依赖（以debian sid版本为例）
 ```
 apt update
-apt install -y nodejs git
+apt install -y nodejs pnpm git
 ```
 > 克隆源码并初始化
 ```
