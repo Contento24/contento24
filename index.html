@@ -1,27 +1,39 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Contento24</title>
-    <link rel="stylesheet" href="./resources/style.css">
-</head>
-<body>
-<div class="chat-container">
-    <div class="chat-header">
+    <link rel="stylesheet" href="./resources/style.css" />
+  </head>
+  <body>
+    <div class="chat-container">
+      <div class="chat-header">
         <h2>🌐 Contento24</h2>
-        <p>一个开源且隐私的24小时在线WebP2P聊天室</p>
         <div class="config-area">
-            <label for="nickname" style="font-size: 0.85rem; color: var(--meta-color)">昵称:</label>
-            <input type="text" id="nickname" value="玩家_Anonymous" placeholder="输入你的大名">
+          <label
+            for="nickname"
+            style="font-size: 0.85rem; color: var(--meta-color)"
+            >昵称:</label
+          >
+          <input
+            type="text"
+            id="nickname"
+            value="未知迪克"
+            placeholder="输入你的名称"
+          />
         </div>
-    </div>
-    <div class="chat-messages" id="chatbox"></div>
-    <div class="chat-input-area">
-        <textarea id="message" placeholder="按 Enter 发送消息，Shift+Enter 换行..." rows="1"></textarea>
+      </div>
+      <div class="chat-messages" id="chatbox"></div>
+      <div class="chat-input-area">
+        <textarea
+          id="message"
+          placeholder="按 Enter 发送消息，Shift+Enter 换行"
+          rows="1"
+        ></textarea>
         <button onclick="send()">发送</button>
+      </div>
     </div>
-</div>
-<script src="./resources/index.js"></script>
-</body>
+    <script src="./resources/index.js"></script>
+  </body>
 </html>

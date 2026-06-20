@@ -1,5 +1,17 @@
 {
+  "name": "Contento24",
+  "version": "0.1.0",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "server": "node ./server.js",
+    "format": "prettier --write \"**/*.{html,css,js}\""
+  },
   "dependencies": {
     "ws": "^8.21.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.4"
   }
 }
