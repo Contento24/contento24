@@ -1,6 +1,7 @@
 # Contento24
 > 一个开源且隐私的24小时在线WebP2P聊天室
-[公共聊天室（按下方方法部署）](https://l.867678.xyz/contento24/)
+
+[测试聊天室](https://l.867678.xyz/contento24/)
 ## 🛠 如何自建服务器
 > 警告：需要较新开发环境和3000端口（TCP 因为需要WS）
 >
@@ -57,11 +58,9 @@ node ./server.js # 启动ws服务器 他和上面那条命令是一样的
 ## 使用Nginx反向代理（可以添加TLS）
 ```
 location /contento24/ {
-    proxy_pass http://127.0.0.1:3000/;
-
+    proxy_pass http://127.0.0.1:3000/; # 或者其他端口和服务器
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";
-
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
