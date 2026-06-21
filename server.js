@@ -96,10 +96,5 @@ wss.on("connection", (ws, req) => {
 });
 
 httpServer.listen(PORT, "::", () => {
-  console.log(`=================================================`);
-  console.log(`🚀 世界光明网全双工聊天室已成功发射！`);
-  console.log(`端口: ${PORT}`);
-  console.log(`内网测试: http://localhost:${PORT}`);
-  console.log(`外网测试: 请直接通过你的IP地址/域名:端口访问`);
-  console.log(`=================================================`);
+  console.log(`Start server successfully at port : ${PORT}`);
 });

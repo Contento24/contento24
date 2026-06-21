@@ -1,6 +1,6 @@
 # Contento24
 > 一个开源且隐私的24小时在线WebP2P聊天室
-![未知迪克](./contento24_full.svg)
+![未知迪克](./contento24_full.jpg)
 
 [测试聊天室](https://l.867678.xyz/contento24/)
 ## 🛠 如何自建服务器
@@ -22,6 +22,10 @@ git pull
 pnpm install
 ```
 > 将server.js配置为systemd服务
+>
+> 需注意要替换path_contento24字段为contento24源码所在目录
+>
+> 以及nodejs目录 这个默认的应该没问题 如果你的有出入请自行修改
 ```
 cat <<'EOF'> /usr/lib/systemd/system/Contento24.service
 [Unit]
@@ -51,20 +55,20 @@ sudo systemctl status Contento24.service
 ## 🔧 如何开发
 > 以ArchLinux为例
 ```
-sudo pacman -Syyuu git nodejs
-# 下列方式比较人类可以尝试 直接安装Archlinux源中自带的pnpm将无法self-upgrade 需注意pnpm偶尔可能对npm有依赖关系
+sudo pacman -Syyuu --needed git nodejs
+# 直接安装Archlinux源中自带的pnpm将无法self-upgrade 需注意pnpm偶尔可能对npm有依赖关系
 sudo corepack enable # 是的需要root权限
 corepack prepare pnpm@latest
 git clone git@github.com:mokanove/contento24.git
 cd contento24
 pnpm install
-pnpm server # 或下方命令 这条命令最终会执行下面那条
-node ./server.js # 启动ws服务器 他和上面那条命令是一样的
+pnpm dev # 启动ws服务器
 ```
 ## 使用Nginx反向代理（可以添加TLS）
+> 需注意透传IP 否则显示的发送者IP可能不正确
 ```
 location /contento24/ {
-    proxy_pass http://127.0.0.1:3000/; # 或者其他端口和服务器
+    proxy_pass http://127.0.0.1:3000/;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";
     proxy_set_header Host $host;
