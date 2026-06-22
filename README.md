@@ -2,24 +2,29 @@
 > 一个开源且隐私的24小时在线WebP2P聊天室
 ![未知迪克](./Contento24_full.jpg)
 
-[测试聊天室](https://l.867678.xyz/contento24/)
+[测试聊天室](https://l.867678.xyz/Contento24/)
 ## 🛠 如何自建服务器
-> 警告：需要较新开发环境和3000端口（TCP 因为需要WS）
+> 警告：需要较新开发环境和3000端口（TCP 因为需要WS）以及老演员root用户
 >
 > 安装依赖（以debian sid版本为例）
 ```
 apt update
 apt install -y nodejs npm git sudo
 # 为了避免版本不统一或者其他慢性病 这里以npm安装pnpm
-sudo npm install -g pnpm
+npm install -g pnpm
 pnpm -v # 有输出证明一切安好
 ```
-> 克隆源码并初始化
+> 克隆源码并安装依赖
 ```
 git clone https://github.com/mokanove/contento24.git
 cd contento24/
 git pull
 pnpm install
+```
+> 这个时候如果你有洁癖可以删掉npm和pnpm 他们的作用只是安装项目依赖 跑起来只依赖nodejs
+```
+npm uninstall -g pnpm
+apt purge -y npm
 ```
 > 将server.js配置为systemd服务
 >
