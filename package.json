@@ -1,11 +1,11 @@
 {
   "name": "Contento24",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "engines": {
     "node": ">=24.0.0"
   },
   "scripts": {
-    "server": "node ./server.js",
+    "dev": "node ./server.js",
     "format": "prettier --write \"**/*.{html,css,js}\""
   },
   "dependencies": {

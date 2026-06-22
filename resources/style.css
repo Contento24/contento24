@@ -4,40 +4,40 @@
   --border-color: #2c2c35;
   --text-color: #e4e4e7;
   --primary-color: #3b82f6;
-  --my-msg-bg: #1e3a8a; /* 我消息的背景色：深蓝色 */
-  --other-msg-bg: #232329; /* 别人发的消息背景色：深灰色 */
+  --my-msg-bg: #1e3a8a;
+  --other-msg-bg: #232329;
   --meta-color: #a1a1aa;
 }
 * {
+  font-family: "Segoe UI", Roboto, sans-serif;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 body {
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: linear-gradient(#00fff7,#0078f8);
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(#00fff7, #0078f8);
   color: var(--text-color);
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  padding: 15px;
 }
 .chat-container {
   width: 80%;
   height: 90vh;
   background: var(--container-bg);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
+  border-radius: 25px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 400px) {
   .chat-container {
-    width: 100%;
+    width: 95%;
+    height: 90vh;
   }
 }
 .chat-header {
@@ -145,7 +145,7 @@ body {
   background-color: #1e1e24;
   border-top: 1px solid var(--border-color);
   display: flex;
-  gap: 12px;
+  gap: 18px;
 }
 .chat-input-area textarea {
   flex: 1;
