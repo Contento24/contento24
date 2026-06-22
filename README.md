@@ -3,7 +3,7 @@
 
 ![未知迪克](./Contento24_full.jpg)
 
-[测试聊天室](https://l.867678.xyz/Contento24/)
+[测试聊天室](https://l.867678.xyz/contento24/)
 ## 🛠 如何自建服务器
 > 警告：需要较新开发环境和3000端口（TCP 因为需要WS）以及老演员root用户
 >
