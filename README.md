@@ -10,9 +10,8 @@
 > 安装依赖（以debian sid版本为例）
 ```
 apt update
-apt install -y nodejs npm git sudo
-# 为了避免版本不统一或者其他慢性病 这里以npm安装pnpm
-npm install -g pnpm
+apt install -y nodejs npm git
+npm install -g pnpm # 为了避免版本不统一或者其他慢性病 这里以npm安装pnpm
 pnpm -v # 有输出证明一切安好
 ```
 > 克隆源码并安装依赖
@@ -49,17 +48,15 @@ EOF
 ```
 > 重载systemd并启动服务
 ```
-sudo systemctl daemon-reload
-sudo systemctl start Contento24.service
-# 可选 设置为开机自启动
-sudo systemctl enable Contento24.service
-# 可选 查看服务状态
-sudo systemctl status Contento24.service
+systemctl daemon-reload
+systemctl start Contento24.service
+systemctl enable Contento24.service # 可选 设置为开机自启动
+systemctl status Contento24.service # 可选 查看服务状态
 ```
 > 更新源代码
 ```
 # 确保您已经位于项目根目录
-git pull
+git pull --force
 pnpm update
 pnpm install
 systemctl restart Contento24
