@@ -1,8 +1,6 @@
 ![未知迪克](./Contento24_full.jpg)
 # Contento24
 > 一个开源且隐私的24小时在线WebP2P聊天室
->
-> 原作者可能不是那么的愿意维护所以主要是我来
 
 [测试聊天室](https://l.867678.xyz/contento24/)
 ## 🛠 如何自建服务器
@@ -11,9 +9,8 @@
 > 安装依赖（以debian sid版本为例）
 ```
 apt update
-apt install -y nodejs npm git sudo
-# 为了避免版本不统一或者其他慢性病 这里以npm安装pnpm
-npm install -g pnpm
+apt install -y nodejs npm git
+npm install -g pnpm # 为了避免版本不统一或者其他慢性病 这里以npm安装pnpm
 pnpm -v # 有输出证明一切安好
 ```
 > 克隆源码并安装依赖
@@ -50,17 +47,15 @@ EOF
 ```
 > 重载systemd并启动服务
 ```
-sudo systemctl daemon-reload
-sudo systemctl start Contento24.service
-# 可选 设置为开机自启动
-sudo systemctl enable Contento24.service
-# 可选 查看服务状态
-sudo systemctl status Contento24.service
+systemctl daemon-reload
+systemctl start Contento24.service
+systemctl enable Contento24.service # 可选 设置为开机自启动
+systemctl status Contento24.service # 可选 查看服务状态
 ```
 > 更新源代码
 ```
 # 确保您已经位于项目根目录
-git pull
+git pull --force
 pnpm update
 pnpm install
 systemctl restart Contento24
