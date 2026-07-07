@@ -23,6 +23,12 @@ body {
   justify-content: center;
   align-items: center;
 }
+.ctt24 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: white;
+}
 .chat-container {
   width: 80%;
   height: 90vh;
@@ -47,11 +53,6 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-.chat-header h2 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #fff;
 }
 .config-area {
   display: flex;
