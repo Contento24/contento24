@@ -17,7 +17,7 @@
 apt update
 apt install -y nodejs git
 corepack enable # 是的需要root权限
-corepack prepare pnpm@latest # 为了避免版本不统一或者其他慢性病 这里以corepack安装pnpm
+corepack use pnpm@latest # 为了避免版本不统一或者其他慢性病 这里以corepack安装pnpm
 pnpm -v # 有输出证明一切安好
 ```
 
