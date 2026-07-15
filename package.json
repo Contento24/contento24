@@ -6,12 +6,10 @@
   },
   "scripts": {
     "dev": "node ./server.js",
-    "format": "prettier --write \"**/*.{html,css,js}\""
-  },
-  "dependencies": {
-    "ws": "^8.21.0"
+    "format": "prettier . --write"
   },
   "devDependencies": {
-    "prettier": "^3.9.4"
+    "prettier": "^3.9.5",
+    "ws": "^8.21.1"
   }
 }

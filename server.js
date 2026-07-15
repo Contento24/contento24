@@ -2,7 +2,7 @@ const fs = require("fs");
 const http = require("http");
 const WebSocket = require("ws");
 const path = require("path");
-
+//下方指定端口
 const PORT = 3000;
 
 const httpServer = http.createServer((req, res) => {
@@ -48,15 +48,15 @@ const wss = new WebSocket.Server({
 function formatIP(ip) {
   if (!ip) return "未知IP";
   if (ip === "::1" || ip === "127.0.0.1" || ip === "::ffff:127.0.0.1") {
-    return "[IPv6] 本地回环(localhost)";
+    return "本地回环地址";
   }
   if (ip.startsWith("::ffff:")) {
-    return `[IPv4] ${ip.substring(7)}`;
+    return `${ip.substring(7)}`;
   }
   if (ip.includes(":")) {
-    return `[IPv6] ${ip}`;
+    return `${ip}`;
   }
-  return `[IPv4] ${ip}`;
+  return `${ip}`;
 }
 
 wss.on("connection", (ws, req) => {
