@@ -1,0 +1,31 @@
+name: Don't leave me behind
+
+on:
+  push:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Creat Release
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+      
+      - name: Get Version
+        id: get_version
+        shell: bash
+        run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Release
+        uses: softprops/action-gh-release@master
+        with:
+          tag_name: V${{ steps.get_version.outputs.version }}
+          files: 
+          body: |
+            # 📝 Release Note
+            - Fixes and improvements
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
