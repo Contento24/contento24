@@ -16,14 +16,12 @@
 ```
 apt update
 apt install -y nodejs git
-corepack enable # 是的需要root权限
-corepack use pnpm@latest # 为了避免版本不统一或者其他慢性病 这里以corepack安装pnpm
+curl -fsSL https://get.pnpm.io/install.sh | sh -
 pnpm -v # 有输出证明一切安好
 ```
 
 > 克隆源码并安装依赖
 
-安装完依赖之后其实可以删掉pnpm
 ```
 git clone https://github.com/contento24/contento24.git
 cd contento24/
