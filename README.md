@@ -1,4 +1,4 @@
-![未知迪克](https://raw.githubusercontent.com/mokanove/contento24/refs/heads/main/Contento24_full.jpg)
+![未知迪克](Contento24_full.jpg)
 
 # Contento24
 
