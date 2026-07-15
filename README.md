@@ -1,4 +1,4 @@
-![未知迪克](Contento24_full.jpg)
+![未知迪克](https://raw.githubusercontent.com/Contento24/contento24/refs/heads/main/resources/Contento24_full.jpg)
 
 # Contento24
 
@@ -28,6 +28,7 @@ pnpm -v # 有输出证明一切安好
 git clone https://github.com/contento24/contento24.git
 cd contento24/
 pnpm install
+rm ./README.md ./LICENSE ./resources/Contento24_full.jpg ./resources/Contento24_old.jpg
 ```
 
 > 将server.js配置为systemd服务
@@ -61,13 +62,6 @@ systemctl daemon-reload
 systemctl start contento24.service
 systemctl enable contento24.service # 可选 设置为开机自启
 systemctl status contento24.service # 可选 查看服务状态
-```
-
-> 更新源代码
-
-```
-# 确保您已经位于项目根目录
-./update.sh
 ```
 
 # 📚 以下是进阶教程
