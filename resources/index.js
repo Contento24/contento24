@@ -30,10 +30,10 @@ function setConnectionStatus(text, connected) {
 
 function initWebSocket() {
   clearTimeout(reconnectTimer);
-  setConnectionStatus("Connecting…", false);
+  setConnectionStatus("正在连接…", false);
   ws = new WebSocket(getWebSocketUrl());
 
-  ws.onopen = () => setConnectionStatus("Connected", true);
+  ws.onopen = () => setConnectionStatus("已连接", true);
 
   ws.onmessage = (event) => {
     try {
@@ -70,7 +70,7 @@ function initWebSocket() {
 
   ws.onerror = (err) => console.error("WebSocket error", err);
   ws.onclose = () => {
-    setConnectionStatus("Disconnected, retry after 3 seconds...", false);
+    setConnectionStatus("失去连接，将在3秒钟后重试...", false);
     reconnectTimer = setTimeout(initWebSocket, 3000);
   };
 }
