@@ -17,6 +17,7 @@ const typingIndicator = document.getElementById("typing-indicator");
 const typingText = document.getElementById("typing-text");
 const sendButton = document.getElementById("send-button");
 const welcomeScreen = document.getElementById("welcome-screen");
+const welcomeContinue = document.getElementById("welcome-continue");
 const welcomeWidget = document.getElementById("welcome-widget");
 const welcomePrefix = document.getElementById("welcome-prefix");
 const welcomeBrand = document.getElementById("welcome-brand");
@@ -151,12 +152,32 @@ async function runWelcomeFinale() {
   if (welcomeWidget.isConnected) welcomeWidget.classList.add("is-finalizing");
 }
 
-if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-  welcomeTranslations.forEach((translation, index) => {
-    setTimeout(() => refreshWelcomeText(translation), (index + 1) * 1400);
-  });
-  setTimeout(runWelcomeFinale, 2650);
+let welcomeStarted = false;
+
+function startWelcome() {
+  if (welcomeStarted || !welcomeScreen?.isConnected) return;
+  welcomeStarted = true;
+  welcomeContinue.disabled = true;
+  welcomeContinue.classList.add("is-leaving");
+  welcomeContinue.addEventListener(
+    "transitionend",
+    () => {
+      welcomeContinue.hidden = true;
+    },
+    { once: true },
+  );
+  welcomeScreen.classList.add("has-started");
+  document.body.classList.add("welcome-started");
+
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    welcomeTranslations.forEach((translation, index) => {
+      setTimeout(() => refreshWelcomeText(translation), (index + 1) * 1400);
+    });
+    setTimeout(runWelcomeFinale, 2650);
+  }
 }
+
+welcomeContinue?.addEventListener("click", startWelcome);
 
 welcomeScreen?.addEventListener("animationend", (event) => {
   if (event.target === welcomeScreen) welcomeScreen.remove();
