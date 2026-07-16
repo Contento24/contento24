@@ -9,6 +9,15 @@ const MAX_MESSAGE_LENGTH = 2000;
 const MAX_NICKNAME_LENGTH = 30;
 const RATE_LIMIT_WINDOW_MS = 5000;
 const RATE_LIMIT_MESSAGES = 5;
+const allowedSystems = new Set([
+  "windows",
+  "macos",
+  "ios",
+  "android",
+  "linux",
+  "chromeos",
+  "unknown",
+]);
 const allowedOrigins = new Set(
   (process.env.ALLOWED_ORIGINS || "")
     .split(",")
@@ -73,12 +82,47 @@ const wss = new WebSocket.Server({
   },
 });
 
+function broadcastOnlineCount() {
+  const onlineCount = [...wss.clients].filter(
+    (client) => client.readyState === WebSocket.OPEN,
+  ).length;
+  const payload = JSON.stringify({ type: "presence", onlineCount });
+
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) client.send(payload);
+  });
+}
+
+function broadcastTypingCount() {
+  const typingClients = [...wss.clients].filter(
+    (client) => client.readyState === WebSocket.OPEN && client.isTyping,
+  );
+
+  wss.clients.forEach((client) => {
+    if (client.readyState !== WebSocket.OPEN) return;
+    const typingCount = Math.max(
+      0,
+      typingClients.length - (client.isTyping ? 1 : 0),
+    );
+    client.send(JSON.stringify({ type: "typing", typingCount }));
+  });
+}
+
 wss.on("error", (err) => {
   console.error("WebSocket server error:", err);
 });
 
 wss.on("connection", (ws) => {
   const recentMessages = [];
+  ws.isTyping = false;
+  ws.typingTimer = null;
+  broadcastOnlineCount();
+
+  ws.on("close", () => {
+    clearTimeout(ws.typingTimer);
+    broadcastOnlineCount();
+    broadcastTypingCount();
+  });
 
   ws.on("message", (message, isBinary) => {
     if (isBinary) return ws.close(1003, "Only text messages are supported");
@@ -86,6 +130,19 @@ wss.on("connection", (ws) => {
     try {
       const parsedData = JSON.parse(message.toString());
       if (!parsedData || typeof parsedData !== "object") return;
+
+      if (parsedData.type === "typing") {
+        clearTimeout(ws.typingTimer);
+        ws.isTyping = parsedData.isTyping === true;
+        if (ws.isTyping) {
+          ws.typingTimer = setTimeout(() => {
+            ws.isTyping = false;
+            broadcastTypingCount();
+          }, 2500);
+        }
+        broadcastTypingCount();
+        return;
+      }
 
       const clientId =
         typeof parsedData.clientId === "string"
@@ -99,8 +156,17 @@ wss.on("connection", (ws) => {
         typeof parsedData.text === "string"
           ? parsedData.text.trim().slice(0, MAX_MESSAGE_LENGTH)
           : "";
+      const system = allowedSystems.has(parsedData.system)
+        ? parsedData.system
+        : "unknown";
 
       if (!text) return;
+
+      if (ws.isTyping) {
+        clearTimeout(ws.typingTimer);
+        ws.isTyping = false;
+        broadcastTypingCount();
+      }
 
       const now = Date.now();
       while (
@@ -113,8 +179,10 @@ wss.on("connection", (ws) => {
       recentMessages.push(now);
 
       const broadcastPayload = JSON.stringify({
+        type: "message",
         clientId,
         nickname: nickname || "匿名迪克",
+        system,
         text,
         time: new Date().toLocaleTimeString("zh-CN", {
           hour: "2-digit",
