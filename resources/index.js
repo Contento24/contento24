@@ -2,91 +2,95 @@ const myClientId =
   "client_" +
   Math.random().toString(36).substring(2, 15) +
   Date.now().toString(36);
-const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
-
-let path = window.location.pathname;
-if (!path.endsWith("/")) {
-  path += "/";
-}
-
-let ws;
-if (!window.location.host || window.location.host === "") {
-  ws = new WebSocket(`ws://127.0.0.1:3000/`);
-} else {
-  ws = new WebSocket(`${protocol}${window.location.host}${path}`);
-}
 
 const chatbox = document.getElementById("chatbox");
 const inputElement = document.getElementById("message");
 const nicknameElement = document.getElementById("nickname");
+const statusElement = document.getElementById("connection-status");
+const sendButton = document.getElementById("send-button");
 
-inputElement.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
+let ws;
+let reconnectTimer;
+
+function getWebSocketUrl() {
+  if (!window.location.host) return "ws://127.0.0.1:3000/";
+
+  const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+  const pathname = window.location.pathname.endsWith("/")
+    ? window.location.pathname
+    : `${window.location.pathname}/`;
+  return `${protocol}//${window.location.host}${pathname}`;
+}
+
+function setConnectionStatus(text, connected) {
+  statusElement.textContent = text;
+  statusElement.dataset.connected = String(connected);
+  sendButton.disabled = !connected;
+}
+
+function initWebSocket() {
+  clearTimeout(reconnectTimer);
+  setConnectionStatus("连接中…", false);
+  ws = new WebSocket(getWebSocketUrl());
+
+  ws.onopen = () => setConnectionStatus("已连接", true);
+
+  ws.onmessage = (event) => {
+    try {
+      const data = JSON.parse(event.data);
+      const isMe = data.clientId === myClientId;
+      const row = document.createElement("div");
+      row.className = `message-row ${isMe ? "row-me" : "row-other"}`;
+
+      const meta = document.createElement("div");
+      meta.className = "message-meta";
+
+      const user = document.createElement("span");
+      user.className = "message-user";
+      user.textContent = `${data.nickname}${isMe ? " (我)" : ""}`;
+
+      const time = document.createElement("span");
+      time.textContent = data.time;
+
+      const card = document.createElement("div");
+      card.className = "message-card";
+      const messageText = document.createElement("div");
+      messageText.className = "message-text";
+      messageText.textContent = data.text;
+
+      meta.append(user, time);
+      card.appendChild(messageText);
+      row.append(meta, card);
+      chatbox.appendChild(row);
+      chatbox.scrollTo({ top: chatbox.scrollHeight, behavior: "smooth" });
+    } catch (err) {
+      console.error("Invalid server message", err);
+    }
+  };
+
+  ws.onerror = (err) => console.error("WebSocket error", err);
+  ws.onclose = () => {
+    setConnectionStatus("连接已断开，3 秒后重连…", false);
+    reconnectTimer = setTimeout(initWebSocket, 3000);
+  };
+}
+
+function send() {
+  const text = inputElement.value.trim();
+  const nickname = nicknameElement.value.trim() || "匿名用户";
+
+  if (text && ws?.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify({ clientId: myClientId, nickname, text }));
+    inputElement.value = "";
+  }
+}
+
+inputElement.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
     send();
   }
 });
+sendButton.addEventListener("click", send);
 
-ws.onmessage = (event) => {
-  try {
-    const data = JSON.parse(event.data);
-    const isMe = data.clientId === myClientId;
-
-    const rowClass = isMe ? "row-me" : "row-other";
-    const displayName = isMe
-      ? `${escapeHtml(data.nickname)} (我)`
-      : escapeHtml(data.nickname);
-
-    const row = document.createElement("div");
-    row.className = `message-row ${rowClass}`;
-    row.innerHTML = `
-                <div class="message-meta">
-                    <span class="message-user">${displayName}</span>
-                    <span>${escapeHtml(data.time)}</span>
-                    <span>${escapeHtml(data.ip)}</span>
-                </div>
-                <div class="message-card">
-                    <div class="message-text">${escapeHtml(data.text)}</div>
-                </div>
-            `;
-
-    chatbox.appendChild(row);
-    chatbox.scrollTo({ top: chatbox.scrollHeight, behavior: "smooth" });
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-window.send = function () {
-  const text = inputElement.value.trim();
-  const nickname = nicknameElement.value.trim() || "匿名迪克";
-
-  if (text && ws.readyState === WebSocket.OPEN) {
-    const payload = JSON.stringify({
-      clientId: myClientId,
-      nickname: nickname,
-      text: text,
-    });
-    ws.send(payload);
-    inputElement.value = "";
-  }
-};
-
-function escapeHtml(string) {
-  return String(string).replace(/[&<>"']/g, function (s) {
-    return {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;",
-    }[s];
-  });
-}
-ws.onerror = (err) => {
-  console.error("WebSocket error", err);
-};
-ws.onclose = () => {
-  console.log("Disconnected，3秒后重连...");
-  setTimeout(initWebSocket, 3000);
-};
+initWebSocket();

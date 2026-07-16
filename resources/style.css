@@ -4,6 +4,7 @@
   --border-color: #2c2c35;
   --text-color: #e4e4e7;
   --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
   --my-msg-bg: #1e3a8a;
   --other-msg-bg: #232329;
   --meta-color: #a1a1aa;
@@ -67,6 +68,13 @@ body {
   border-radius: 6px;
   outline: none;
   font-size: 0.9rem;
+}
+#connection-status {
+  color: #fbbf24;
+  font-size: 0.8rem;
+}
+#connection-status[data-connected="true"] {
+  color: #34d399;
 }
 .chat-messages {
   flex: 1;
@@ -175,4 +183,8 @@ body {
 }
 .chat-input-area button:hover {
   background-color: var(--primary-hover);
+}
+.chat-input-area button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }

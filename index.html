@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Contento24</title>
     <link rel="stylesheet" href="./resources/style.css" />
-    <link rel="shortcut icon" href="./resources/favicon.png" type="image/x-icon" />
+    <link
+      rel="shortcut icon"
+      href="./resources/favicon.png"
+      type="image/x-icon"
+    />
   </head>
   <body>
     <div class="chat-container">
@@ -13,6 +17,7 @@
         <a
           href="https://867678.xyz/project/contento24"
           target="_blank"
+          rel="noopener noreferrer"
           class="ctt24"
           >🌐 Contento24</a
         >
@@ -25,9 +30,11 @@
           <input
             type="text"
             id="nickname"
-            value="未知迪克"
-            placeholder="输入你的迪称"
+            value="匿名用户"
+            placeholder="输入你的昵称"
+            maxlength="30"
           />
+          <span id="connection-status" role="status">连接中…</span>
         </div>
       </div>
       <div class="chat-messages" id="chatbox"></div>
@@ -36,8 +43,9 @@
           id="message"
           placeholder="按 Enter 发送消息，Shift+Enter 换行"
           rows="1"
+          maxlength="2000"
         ></textarea>
-        <button onclick="send()">发送</button>
+        <button id="send-button" type="button" disabled>发送</button>
       </div>
     </div>
     <script src="./resources/index.js"></script>

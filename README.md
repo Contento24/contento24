@@ -2,14 +2,14 @@
 
 # Contento24
 
-一个开源且隐私的24小时在线公共WebP2P聊天室 刷新页面所有内容消失
+一个开源的实时公共 WebSocket 聊天室。消息只在在线用户之间广播，服务器不保存聊天记录，刷新页面后本地内容会消失。
 [测试聊天室](https://l.867678.xyz/contento24/)
 
 消歧义：项目本名`Contento24` 但为了方便管理 所有出现在URL Shell中的名称统一为`contento24`
 
 ## 🛠 如何自建服务器
 
-> 警告：需要较新开发环境和3000端口（TCP 因为需要WS 你也可以自行修改server.js中的监听端口）
+> 警告：默认使用 3000 端口，也可以通过 `PORT` 环境变量修改。项目同时使用 HTTP 和 WebSocket。
 >
 > 安装依赖（以debian sid版本为例 需要root权限）
 
@@ -26,7 +26,6 @@ pnpm -v # 有输出证明一切安好
 git clone https://github.com/contento24/contento24.git
 cd contento24/
 pnpm install
-rm ./README.md ./LICENSE ./resources/Contento24_full.jpg ./resources/Contento24_old.svg
 ```
 
 > 将server.js配置为systemd服务
@@ -96,6 +95,11 @@ cd contento24
 pnpm install
 pnpm dev # 启动ws服务器
 ```
+
+可选环境变量：
+
+- `PORT`：服务监听端口，默认为 `3000`。
+- `ALLOWED_ORIGINS`：允许建立 WebSocket 连接的来源，多个来源使用英文逗号分隔；未设置时允许所有来源。
 
 ## 🙏 特别鸣谢
 

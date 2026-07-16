@@ -1,82 +1,121 @@
 const fs = require("fs");
 const http = require("http");
-const WebSocket = require("ws");
 const path = require("path");
-//下方指定端口
-const PORT = 3000;
+const WebSocket = require("ws");
+
+const PORT = Number(process.env.PORT) || 3000;
+const STATIC_ROOT = __dirname;
+const MAX_MESSAGE_LENGTH = 2000;
+const MAX_NICKNAME_LENGTH = 30;
+const RATE_LIMIT_WINDOW_MS = 5000;
+const RATE_LIMIT_MESSAGES = 5;
+const allowedOrigins = new Set(
+  (process.env.ALLOWED_ORIGINS || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean),
+);
+
+const mimeTypes = {
+  ".html": "text/html; charset=utf-8",
+  ".css": "text/css; charset=utf-8",
+  ".js": "application/javascript; charset=utf-8",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".svg": "image/svg+xml",
+};
 
 const httpServer = http.createServer((req, res) => {
-  let filePath = req.url === "/" ? "index.html" : req.url.substring(1);
-  filePath = path.normalize(filePath).replace(/^(\.\.(\/|\\|$))+/, "");
+  let pathname;
 
-  const extname = path.extname(filePath).toLowerCase();
-  const mimeTypes = {
-    ".html": "text/html; charset=utf-8",
-    ".css": "text/css; charset=utf-8",
-    ".js": "application/javascript; charset=utf-8",
-    ".png": "image/png",
-    ".jpg": "image/jpeg",
-  };
+  try {
+    pathname = decodeURIComponent(
+      new URL(req.url, "http://localhost").pathname,
+    );
+  } catch {
+    res.writeHead(400, { "Content-Type": "text/plain; charset=utf-8" });
+    return res.end("400 Bad Request");
+  }
 
-  const contentType = mimeTypes[extname] || "application/octet-stream";
+  if (pathname === "/") pathname = "/index.html";
+
+  const filePath = path.resolve(STATIC_ROOT, `.${pathname}`);
+  const relativePath = path.relative(STATIC_ROOT, filePath);
+  if (relativePath.startsWith("..") || path.isAbsolute(relativePath)) {
+    res.writeHead(403, { "Content-Type": "text/plain; charset=utf-8" });
+    return res.end("403 Forbidden");
+  }
+
+  const contentType =
+    mimeTypes[path.extname(filePath).toLowerCase()] ||
+    "application/octet-stream";
 
   fs.readFile(filePath, (err, data) => {
     if (err) {
       res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
       return res.end("404 Not Found");
     }
-    res.writeHead(200, { "Content-Type": contentType });
-    res.end(data);
+
+    res.writeHead(200, {
+      "Content-Type": contentType,
+      "X-Content-Type-Options": "nosniff",
+    });
+    return res.end(data);
   });
 });
 
 const wss = new WebSocket.Server({
   server: httpServer,
-  verifyClient: (info, callback) => {
-    const req = info.req;
-    const rawIP =
-      req.headers["x-forwarded-for"] ||
-      req.headers["x-real-ip"] ||
-      req.connection.remoteAddress;
-
-    req.realClientIP =
-      rawIP && rawIP.includes(",") ? rawIP.split(",")[0].trim() : rawIP;
-    callback(true);
+  maxPayload: 16 * 1024,
+  verifyClient: ({ origin }, callback) => {
+    callback(allowedOrigins.size === 0 || allowedOrigins.has(origin), 403);
   },
 });
 
-function formatIP(ip) {
-  if (!ip) return "未知IP";
-  if (ip === "::1" || ip === "127.0.0.1" || ip === "::ffff:127.0.0.1") {
-    return "本地回环地址";
-  }
-  if (ip.startsWith("::ffff:")) {
-    return `${ip.substring(7)}`;
-  }
-  if (ip.includes(":")) {
-    return `${ip}`;
-  }
-  return `${ip}`;
-}
+wss.on("error", (err) => {
+  console.error("WebSocket server error:", err);
+});
 
-wss.on("connection", (ws, req) => {
-  const finalIP = req.realClientIP || req.socket.remoteAddress;
-  const clientIP = formatIP(finalIP);
+wss.on("connection", (ws) => {
+  const recentMessages = [];
 
-  ws.on("message", (message) => {
+  ws.on("message", (message, isBinary) => {
+    if (isBinary) return ws.close(1003, "Only text messages are supported");
+
     try {
-      const parsedData = JSON.parse(message);
-      const clientId = parsedData.clientId || "";
-      const nickname = parsedData.nickname || "匿名迪克";
-      const text = parsedData.text || "";
+      const parsedData = JSON.parse(message.toString());
+      if (!parsedData || typeof parsedData !== "object") return;
 
-      if (!text.trim()) return;
+      const clientId =
+        typeof parsedData.clientId === "string"
+          ? parsedData.clientId.slice(0, 100)
+          : "";
+      const nickname =
+        typeof parsedData.nickname === "string"
+          ? parsedData.nickname.trim().slice(0, MAX_NICKNAME_LENGTH)
+          : "";
+      const text =
+        typeof parsedData.text === "string"
+          ? parsedData.text.trim().slice(0, MAX_MESSAGE_LENGTH)
+          : "";
+
+      if (!text) return;
+
+      const now = Date.now();
+      while (
+        recentMessages.length > 0 &&
+        recentMessages[0] <= now - RATE_LIMIT_WINDOW_MS
+      ) {
+        recentMessages.shift();
+      }
+      if (recentMessages.length >= RATE_LIMIT_MESSAGES) return;
+      recentMessages.push(now);
 
       const broadcastPayload = JSON.stringify({
-        clientId: clientId,
-        nickname: nickname,
-        text: text,
-        ip: clientIP,
+        clientId,
+        nickname: nickname || "匿名用户",
+        text,
         time: new Date().toLocaleTimeString("zh-CN", {
           hour: "2-digit",
           minute: "2-digit",
@@ -90,11 +129,16 @@ wss.on("connection", (ws, req) => {
         }
       });
     } catch (err) {
-      console.error(err);
+      console.warn("Ignored invalid WebSocket message:", err.message);
     }
   });
 });
 
+httpServer.on("error", (err) => {
+  console.error("HTTP server error:", err);
+  process.exitCode = 1;
+});
+
 httpServer.listen(PORT, "::", () => {
-  console.log(`Start server successfully at port : ${PORT}`);
+  console.log(`Server listening on port ${PORT}`);
 });
