@@ -26,6 +26,7 @@ pnpm -v # 有输出证明一切安好
 git clone https://github.com/contento24/contento24.git
 cd contento24/
 pnpm install
+rm ./README.md ./LICENSE ./resources/Contento24_full.jpg ./resources/Contento24_old.svg
 ```
 
 > 将server.js配置为systemd服务

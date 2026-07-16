@@ -1,11 +1,10 @@
 {
   "name": "Contento24",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "engines": {
     "node": ">=24.0.0"
   },
   "scripts": {
-    "start": "node ./server.js",
     "dev": "node ./server.js",
     "format": "prettier . --write",
     "format:check": "prettier . --check",

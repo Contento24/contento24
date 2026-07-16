@@ -1,26 +1,33 @@
-name: Create release
+name: Don't leave me behind
 
 on:
   push:
   workflow_dispatch:
-    inputs:
-      tag_name:
-        description: Existing tag to release (for example, v0.1.7)
-        required: true
-        type: string
 
 permissions:
   contents: write
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
+    name: Creat Release
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@main
 
-      - name: Create GitHub release
-        uses: softprops/action-gh-release@v2
+      - name: Get Version
+        id: get_version
+        shell: bash
+        run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Release
+        uses: softprops/action-gh-release@master
         with:
-          tag_name: ${{ inputs.tag_name || github.ref_name }}
-          generate_release_notes: true
+          tag_name: V${{ steps.get_version.outputs.version }}
+          files:
+          body: |
+            # 📝 Release Note
+            - Fixes and improvements
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

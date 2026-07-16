@@ -30,10 +30,10 @@ function setConnectionStatus(text, connected) {
 
 function initWebSocket() {
   clearTimeout(reconnectTimer);
-  setConnectionStatus("连接中…", false);
+  setConnectionStatus("Connecting…", false);
   ws = new WebSocket(getWebSocketUrl());
 
-  ws.onopen = () => setConnectionStatus("已连接", true);
+  ws.onopen = () => setConnectionStatus("Connected", true);
 
   ws.onmessage = (event) => {
     try {
@@ -70,14 +70,14 @@ function initWebSocket() {
 
   ws.onerror = (err) => console.error("WebSocket error", err);
   ws.onclose = () => {
-    setConnectionStatus("连接已断开，3 秒后重连…", false);
+    setConnectionStatus("Disconnected, retry after 3 seconds...", false);
     reconnectTimer = setTimeout(initWebSocket, 3000);
   };
 }
 
 function send() {
   const text = inputElement.value.trim();
-  const nickname = nicknameElement.value.trim() || "匿名用户";
+  const nickname = nicknameElement.value.trim() || "匿名迪克";
 
   if (text && ws?.readyState === WebSocket.OPEN) {
     ws.send(JSON.stringify({ clientId: myClientId, nickname, text }));

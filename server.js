@@ -114,7 +114,7 @@ wss.on("connection", (ws) => {
 
       const broadcastPayload = JSON.stringify({
         clientId,
-        nickname: nickname || "匿名用户",
+        nickname: nickname || "匿名迪克",
         text,
         time: new Date().toLocaleTimeString("zh-CN", {
           hour: "2-digit",
