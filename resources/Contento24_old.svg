@@ -7,7 +7,12 @@
       }
 
       .cls-2 {
-        fill: #0071bc;
+        fill: url(#blue-glass);
+        stroke: #d9f3ff;
+        stroke-opacity: .48;
+        stroke-width: 3.2;
+        paint-order: stroke fill;
+        filter: url(#liquid-glass-blue);
       }
 
       .cls-3 {
@@ -22,7 +27,59 @@
       .cls-5 {
         letter-spacing: -.03em;
       }
+
+      #_图层_1 > path:not(.cls-2),
+      #_图层_1 > polygon,
+      #_图层_1 > text {
+        fill: url(#ink-glass);
+        stroke: #ffffff;
+        stroke-opacity: .28;
+        stroke-width: 2.6;
+        paint-order: stroke fill;
+        filter: url(#liquid-glass-ink);
+      }
     </style>
+    <linearGradient id="blue-glass" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1807.03" y2="606.93">
+      <stop offset="0" stop-color="#0071bc" stop-opacity=".94"/>
+      <stop offset=".18" stop-color="#65b9e8" stop-opacity=".86"/>
+      <stop offset=".42" stop-color="#0071bc" stop-opacity=".98"/>
+      <stop offset=".68" stop-color="#9ed9f5" stop-opacity=".78"/>
+      <stop offset=".82" stop-color="#0071bc" stop-opacity=".96"/>
+      <stop offset="1" stop-color="#005f9f" stop-opacity=".92"/>
+    </linearGradient>
+    <linearGradient id="ink-glass" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1807.03" y2="606.93">
+      <stop offset="0" stop-color="#05080d" stop-opacity=".98"/>
+      <stop offset=".2" stop-color="#505862" stop-opacity=".84"/>
+      <stop offset=".46" stop-color="#05080d" stop-opacity=".99"/>
+      <stop offset=".7" stop-color="#7d858f" stop-opacity=".76"/>
+      <stop offset="1" stop-color="#030508" stop-opacity=".97"/>
+    </linearGradient>
+    <filter id="liquid-glass-blue" x="-18%" y="-28%" width="136%" height="156%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="9" stdDeviation="10" flood-color="#003f72" flood-opacity=".34" result="shadow"/>
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2.1" result="soft-alpha"/>
+      <feSpecularLighting in="soft-alpha" surfaceScale="7" specularConstant=".96" specularExponent="42" lighting-color="#ffffff" result="specular">
+        <fePointLight x="-420" y="-480" z="1050"/>
+      </feSpecularLighting>
+      <feComposite in="specular" in2="SourceAlpha" operator="in" result="clipped-specular"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+        <feMergeNode in="clipped-specular"/>
+      </feMerge>
+    </filter>
+    <filter id="liquid-glass-ink" x="-18%" y="-28%" width="136%" height="156%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#000000" flood-opacity=".3" result="shadow"/>
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.9" result="soft-alpha"/>
+      <feSpecularLighting in="soft-alpha" surfaceScale="6" specularConstant=".8" specularExponent="40" lighting-color="#ffffff" result="specular">
+        <fePointLight x="-400" y="-450" z="1020"/>
+      </feSpecularLighting>
+      <feComposite in="specular" in2="SourceAlpha" operator="in" result="clipped-specular"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+        <feMergeNode in="clipped-specular"/>
+      </feMerge>
+    </filter>
   </defs>
   <path class="cls-2" d="M482.07,337.43s14.98,143.22-177.29,172.36c0,0-187.28,2.43-164.81-172.36,22.47-174.78,170.25-179.64,170.25-179.64v87.39l141.89-106.81L310.22,0v48.55S-7.36,63.12.13,339.86c7.49,276.74,324.62,267.03,324.62,267.03l24.97-82.54s137.34-14.57,132.35-186.92Z"/>
   <path class="cls-2" d="M361.08,527.89l-20.52,79.03s42.64-1.6,53.1-21.54c10.46-19.95,0-65.7,0-65.7l-32.59,8.21Z"/>
