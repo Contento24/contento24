@@ -160,7 +160,7 @@ function startWelcome() {
   welcomeContinue.disabled = true;
   welcomeContinue.classList.add("is-leaving");
   welcomeContinue.addEventListener(
-    "transitionend",
+    "animationend",
     () => {
       welcomeContinue.hidden = true;
     },
@@ -276,6 +276,12 @@ function detectSystem() {
 const currentSystem = detectSystem();
 
 function getWebSocketUrl() {
+  // Android APK loads the bundled interface from a local file, while the chat
+  // service continues to run on the public Contento24 server.
+  if (window.location.protocol === "file:") {
+    return "wss://l.867678.xyz/contento24/";
+  }
+
   if (!window.location.host) return "ws://127.0.0.1:3000/";
 
   const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
