@@ -37,8 +37,14 @@
           target="_blank"
           rel="noopener noreferrer"
           class="ctt24"
-          >🌐 Contento24</a
+          aria-label="前往 Contento24 项目主页"
         >
+          <span class="ctt24-mark" aria-hidden="true"></span>
+          <span class="ctt24-copy">
+            <strong>Contento24</strong>
+            <small>EPHEMERAL CHAT</small>
+          </span>
+        </a>
         <div class="config-area">
           <div class="nickname-editor" id="nickname-editor">
             <button
@@ -99,7 +105,14 @@
           rows="1"
           maxlength="2000"
         ></textarea>
-        <button id="send-button" type="button" disabled>发送</button>
+        <button id="send-button" type="button" aria-label="发送消息" disabled>
+          <span class="visually-hidden">发送</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M4.4 4.8 20 12 4.4 19.2l2.1-6.1L14 12l-7.5-1.1-2.1-6.1Z"
+            ></path>
+          </svg>
+        </button>
       </div>
     </div>
     <script src="./resources/index.js"></script>
