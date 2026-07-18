@@ -2,12 +2,18 @@
 
 # Contento24
 
-一个开源的实时公共 WebSocket 聊天室。消息只在在线用户之间广播，服务器不保存聊天记录，刷新页面后本地内容会消失。
 [测试聊天室](https://l.867678.xyz/contento24/)
+一个开源的实时公共 WebSocket 聊天室。消息只在在线用户之间广播，服务器不保存聊天记录，刷新页面后本地内容会消失。
 
 在聊天框中还藏有少量终端风格的隐藏交互。熟悉 Linux 与 macOS 命令行的用户，或许会在某次输入时偶然遇见。
 
-消歧义：项目本名`Contento24` 但为了方便管理 所有出现在URL Shell中的名称统一为`contento24`
+消歧义：项目本名`Contento24` 但为了方便管理 所有出现在URL或Shell中的名称统一为`contento24`
+
+### 隐藏交互说明
+
+终端风格的隐藏交互完全由浏览器前端呈现，不会执行任何真实的系统命令，也不会将触发内容发送至服务器或广播给聊天室中的其他用户。
+
+README 不公开具体触发方式，以保留探索的乐趣。
 
 ## 🛠 如何自建服务器
 
@@ -33,9 +39,9 @@ rm ./README.md ./LICENSE ./resources/Contento24_full.jpg ./resources/Contento24_
 
 > 将server.js配置为systemd服务
 >
-> 需注意要替换path_contento24字段为contento24源码所在目录
+> 需注意要替换`path_contento24`字段为Contento24源码所在目录
 >
-> nodejs目录 这个默认的应该没问题 如果你的有出入请自行修改
+> nodejs二进制文件所在位置 这个默认的应该没问题 如果你的有出入请自行修改
 
 ```
 cat <<'EOF'> /usr/lib/systemd/system/contento24.service
@@ -64,9 +70,13 @@ systemctl enable contento24.service # 可选 设置为开机自启
 systemctl status contento24.service # 可选 查看服务状态
 ```
 
-# 📚 以下是进阶教程
+## 📚 进阶教程
+### 可选环境变量：
+添加环境变量可以指定某些参数以适应更多工作环境。
+- `PORT`：服务监听端口，默认为 `3000`。
+- `ALLOWED_ORIGINS`：允许建立 WebSocket 连接的来源，多个来源使用英文逗号分隔；未设置时允许所有来源。
 
-## 🛜 使用Nginx反向代理（可以添加TLS）
+### 🛜 使用Nginx反向代理（可以添加TLS）
 
 > 需注意透传IP 否则显示的发送者IP可能不正确
 >
@@ -81,13 +91,11 @@ location /contento24/ {
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_read_timeout 1h;
-    proxy_send_timeout 1h;
     proxy_buffering off;
 }
 ```
 
-## 🔧 如何开发
+### 🔧 如何开发
 
 > 以ArchLinux为例
 
@@ -96,28 +104,31 @@ sudo pacman -Syyuu --needed git nodejs
 # 直接安装Archlinux源中自带的pnpm将无法self-upgrade 需注意pnpm偶尔可能对npm有依赖关系
 sudo corepack enable # 是的需要root权限
 corepack prepare pnpm@latest
-git clone git@github.com:Contento24/contento24.git
+# 如果希望更新pnpm请将prepare换成use
+git clone git@github.com:contento24/contento24.git
 cd contento24
 pnpm install
 pnpm dev # 启动ws服务器
 ```
 
-可选环境变量：
-
-- `PORT`：服务监听端口，默认为 `3000`。
-- `ALLOWED_ORIGINS`：允许建立 WebSocket 连接的来源，多个来源使用英文逗号分隔；未设置时允许所有来源。
-
-### 隐藏交互说明
-
-终端风格的隐藏交互完全由浏览器前端呈现，不会执行任何真实的系统命令，也不会将触发内容发送至服务器或广播给聊天室中的其他用户。README 不公开具体触发方式，以保留探索的乐趣。
-
 ## 🙏 特别鸣谢
+> 排名不分先后
 
-[MidQwerty](https://github.com/midqwerty-alt)
-提供的想法
+提供想法、美术、UI优化：[MidQwerty](https://github.com/midqwerty-alt)
 
+服务器、细节与性能优化：[MoAEIOU](https://867678.xyz)
+
+提供服务或引用软件：
+域名提供商：<https://spaceship.com>
+
+CDN、DNS、攻击保护 <https://cloudflare.com>
+
+代码托管和分发 <https://github.com>
+
+AI：<https://chatgpt.com> <https://claude.ai>
+
+Web服务器：<https://nginx.org>
+
+服务器：<https://colocrossing.com>
 ## ⚖️ 项目许可
-
-> 此项目以GNU Affero General Public License v3.0或更高版本授权
->
-> 详细请参阅LICENSE
+此项目以GNU Affero General Public License v3.0或更高版本授权
