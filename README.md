@@ -17,8 +17,8 @@
 
 ```
 apt update
-apt install -y nodejs git
-curl -fsSL https://get.pnpm.io/install.sh | sh -
+apt install -y nodejs npm git
+npm install -g pnpm
 pnpm -v # 有输出证明一切安好
 ```
 
