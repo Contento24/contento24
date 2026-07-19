@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, interactive-widget=resizes-content"
+    />
+    <meta name="theme-color" content="#07101f" />
+    <title>Contento24 Android</title>
+    <link rel="stylesheet" href="./mobile.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <header class="control-deck">
+        <div class="brand-row">
+          <div class="brand-lockup">
+            <span class="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 3 6.5 12h4L9 21l8.5-11h-4L15 3Z" />
+              </svg>
+            </span>
+            <span class="brand-copy">
+              <strong>Contento24</strong>
+              <small>EPHEMERAL LIVE CHANNEL</small>
+            </span>
+          </div>
+          <button
+            class="refresh-button"
+            id="refresh-button"
+            type="button"
+            aria-label="刷新并重新连接"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M20 6v5h-5M4 18v-5h5M18.5 10A7 7 0 0 0 6 7.5L4 11M5.5 14A7 7 0 0 0 18 16.5l2-3.5"
+              />
+            </svg>
+            <span>刷新</span>
+          </button>
+        </div>
+        <div class="status-row">
+          <div
+            class="connection-pill"
+            id="connection-pill"
+            data-state="connecting"
+          >
+            <span class="signal-dot" aria-hidden="true"></span>
+            <span id="connection-label">正在连接</span>
+          </div>
+          <div class="deck-actions">
+            <div class="online-pill" title="当前在线人数">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
+                />
+              </svg>
+              <strong id="online-count">–</strong>
+              <span>在线</span>
+            </div>
+            <button class="identity-button" id="identity-button" type="button">
+              <span class="identity-avatar" id="identity-avatar">匿</span>
+              <span class="identity-copy">
+                <small>我的昵称</small>
+                <strong id="identity-name">匿名迪克</strong>
+              </span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="transcript" id="transcript" aria-live="polite">
+        <section class="empty-state" id="empty-state">
+          <div class="empty-mark" aria-hidden="true">
+            <span></span>
+            <svg viewBox="0 0 24 24">
+              <path d="M12 3 6.5 12h4L9 21l8.5-11h-4L15 3Z" />
+            </svg>
+          </div>
+          <p class="empty-kicker">CONTENTO24 · LIVE</p>
+          <h1>此刻，频道很安静</h1>
+          <p>说点什么吧。这里的消息只属于当前在线的人，刷新后不会留下痕迹。</p>
+          <div class="feature-tags">
+            <span>实时传递</span>
+            <span>不留记录</span>
+            <span>867678 服务</span>
+          </div>
+        </section>
+      </main>
+
+      <div class="typing-row" id="typing-row" aria-live="polite">
+        <span class="typing-dots"><i></i><i></i><i></i></span>
+        <span id="typing-label"></span>
+      </div>
+
+      <footer class="composer-panel">
+        <div class="composer" id="composer">
+          <textarea
+            id="message-input"
+            rows="1"
+            maxlength="2000"
+            enterkeyhint="send"
+            placeholder="写下此刻想说的话…"
+            aria-label="消息"
+          ></textarea>
+          <span class="character-count" id="character-count">0/2000</span>
+          <button
+            class="send-button"
+            id="send-button"
+            type="button"
+            disabled
+            aria-label="发送"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m4 12 15-8-4.5 16-3.2-6.1L4 12Z" />
+              <path d="m11.3 13.9 3.9-4.2" />
+            </svg>
+          </button>
+        </div>
+        <p class="composer-note"><span></span> 消息不会保存在服务器</p>
+      </footer>
+
+      <div class="sheet-layer" id="sheet-layer" aria-hidden="true">
+        <button
+          class="sheet-backdrop"
+          id="sheet-backdrop"
+          aria-label="关闭"
+        ></button>
+        <section
+          class="identity-sheet"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="sheet-title"
+        >
+          <div class="sheet-handle" aria-hidden="true"></div>
+          <p class="sheet-kicker">IDENTITY</p>
+          <h2 id="sheet-title">设置你的频道昵称</h2>
+          <p class="sheet-description">
+            昵称只会随消息发送，不会创建账号或保存在服务端。
+          </p>
+          <label for="nickname-input">昵称</label>
+          <input
+            id="nickname-input"
+            type="text"
+            maxlength="30"
+            autocomplete="off"
+          />
+          <div class="sheet-actions">
+            <button class="secondary-button" id="cancel-nickname" type="button">
+              取消
+            </button>
+            <button class="primary-button" id="save-nickname" type="button">
+              保存昵称
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <div class="toast" id="toast" role="status"></div>
+    </div>
+    <script src="./mobile.js"></script>
+  </body>
+</html>

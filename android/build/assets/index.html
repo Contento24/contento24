@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contento24</title>
+    <link rel="stylesheet" href="./resources/style.css" />
+    <link
+      rel="shortcut icon"
+      href="./resources/favicon.png"
+      type="image/x-icon"
+    />
+  </head>
+  <body>
+    <div class="welcome-screen" id="welcome-screen">
+      <button class="welcome-continue" id="welcome-continue" type="button">
+        <span>点击以继续</span>
+        <i aria-hidden="true"></i>
+      </button>
+      <div class="welcome-stage">
+        <p class="welcome-eyebrow">消息阅后即逝</p>
+        <p
+          class="welcome-widget"
+          id="welcome-widget"
+          data-brand-position="after"
+        >
+          <span class="welcome-white" id="welcome-prefix">欢迎使用</span>
+          <strong id="welcome-brand">Uni Contento24</strong>
+          <span class="welcome-white" id="welcome-suffix"></span>
+        </p>
+      </div>
+    </div>
+    <div class="chat-container is-empty" id="chat-container">
+      <div class="chat-header">
+        <a
+          href="https://867678.xyz/project/contento24"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="ctt24"
+          >🌐 Contento24</a
+        >
+        <div class="config-area">
+          <div class="nickname-editor" id="nickname-editor">
+            <button
+              class="nickname-toggle"
+              id="nickname-toggle"
+              type="button"
+              aria-label="编辑昵称"
+              aria-controls="nickname"
+              aria-expanded="false"
+              title="编辑昵称"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 20h4L19 9a2.1 2.1 0 0 0-4-4L4 16v4Z"></path>
+                <path d="m13.5 6.5 4 4"></path>
+              </svg>
+            </button>
+            <label class="visually-hidden" for="nickname">昵称</label>
+            <input
+              type="text"
+              id="nickname"
+              value="未知迪克"
+              placeholder="输入你的迪称"
+              maxlength="30"
+            />
+          </div>
+          <span class="connection-summary">
+            <span
+              id="connection-status"
+              role="status"
+              aria-label="连接中…"
+              title="连接中…"
+            >
+              <span class="visually-hidden" id="connection-status-text"
+                >连接中…</span
+              >
+            </span>
+            <span id="online-count" aria-live="polite" title="正在获取在线人数"
+              >–</span
+            >
+          </span>
+        </div>
+      </div>
+      <div class="chat-messages" id="chatbox">
+        <div class="chat-empty-state" id="chat-empty-state">
+          暂时无人发送消息呢，请等待一阵吧～
+        </div>
+      </div>
+      <div class="typing-indicator" id="typing-indicator" aria-live="polite">
+        <span id="typing-text"></span
+        ><span class="typing-dots" aria-hidden="true"
+          ><i></i><i></i><i></i
+        ></span>
+      </div>
+      <div class="chat-input-area">
+        <textarea
+          id="message"
+          placeholder="按 Enter 发送消息，Shift+Enter 换行"
+          rows="1"
+          maxlength="2000"
+        ></textarea>
+        <button id="send-button" type="button" disabled>发送</button>
+      </div>
+    </div>
+    <script src="./resources/index.js"></script>
+  </body>
+</html>
