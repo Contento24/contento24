@@ -71,8 +71,11 @@ systemctl status contento24.service # 可选 查看服务状态
 ```
 
 ## 📚 进阶教程
+
 ### 可选环境变量：
+
 添加环境变量可以指定某些参数以适应更多工作环境。
+
 - `PORT`：服务监听端口，默认为 `3000`。
 - `ALLOWED_ORIGINS`：允许建立 WebSocket 连接的来源，多个来源使用英文逗号分隔；未设置时允许所有来源。
 
@@ -112,6 +115,7 @@ pnpm dev # 启动ws服务器
 ```
 
 ## 🙏 特别鸣谢
+
 > 排名不分先后
 
 提供想法、美术、UI优化：[MidQwerty](https://github.com/midqwerty-alt)
@@ -130,5 +134,7 @@ AI：<https://chatgpt.com> <https://claude.ai>
 Web服务器：<https://nginx.org>
 
 服务器：<https://colocrossing.com>
+
 ## ⚖️ 项目许可
+
 此项目以GNU Affero General Public License v3.0或更高版本授权
