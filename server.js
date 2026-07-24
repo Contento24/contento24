@@ -10,13 +10,13 @@ const MAX_NICKNAME_LENGTH = 30;
 const RATE_LIMIT_WINDOW_MS = 5000;
 const RATE_LIMIT_MESSAGES = 5;
 const allowedSystems = new Set([
-  "windows",
-  "macos",
-  "ios",
-  "android",
-  "linux",
-  "chromeos",
-  "unknown",
+  "Windows",
+  "macOS",
+  "iOS/iPadOS",
+  "Linux",
+  "Android",
+  "Chromeos",
+  "Unknown",
 ]);
 const allowedOrigins = new Set(
   (process.env.ALLOWED_ORIGINS || "")
@@ -203,10 +203,10 @@ wss.on("connection", (ws) => {
 });
 
 httpServer.on("error", (err) => {
-  console.error("HTTP server error:", err);
+  console.error("Server error:", err);
   process.exitCode = 1;
 });
 
 httpServer.listen(PORT, "::", () => {
-  console.log(`Server listening on port ${PORT}`);
+  console.log(`Listening on http://localhost:${PORT}`);
 });
